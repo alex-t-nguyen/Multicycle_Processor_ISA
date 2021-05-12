@@ -39,23 +39,27 @@ module data_ram(
 	 
 	 parameter NUM_DATA_ADDRESSES = NUM_ADDRESSES / 2;
 	 
-	 reg [DATA_BUS_WIDTH - 1:0] ram_memory [0:NUM_DATA_ADDRESSES - 1];	// 512 rows x 64 columns -> 512 addresses each with 64 bits of data
+	 reg [8:0] ram_memory [0:NUM_DATA_ADDRESSES - 1];	// 512 rows x 64 columns -> 512 addresses each with 64 bits of data
+	 
+	 //reg [8:0] ram_memory [0:64];	// reduced ram memory size for debugging purposes
 	 reg [DATA_BUS_WIDTH - 1:0] ram_private;	// temp variable for ram_memory
-	 reg [DATA_BUS_WIDTH - 1:0] read_private; // temp variable for readData
+	 // reg [DATA_BUS_WIDTH - 1:0] read_private; // temp variable for readData
 	 
 	 // Initialize memory with random data
 	 integer i;
 	 
 	 initial	 
 	 begin
-		read_private <= 0;
+		// read_private <= 0;
 		
 		for(i = 0; i < NUM_DATA_ADDRESSES; i = i + 1)
 		begin
-			ram_memory[i] = i;
+			ram_memory[i] = 0;
 		end
 		
-		$display("Data value at mem[%0d] = %0d", 49, ram_memory[49]);
+		ram_memory[16] = 8'd3;
+		ram_memory[32] = 8'd27;
+		ram_memory[48] = 8'd0;
 	 end
 	 
 	 // Read or write data
@@ -65,9 +69,25 @@ module data_ram(
 		if(cs)	// if chip select is on (allow access to memory)
 		begin
 			if(memRead)	// read memory
-				ram_private[DATA_BUS_WIDTH - 1:0] <= ram_memory[address];
+			begin
+				ram_private[7:0] <= ram_memory[address];
+				ram_private[15:8] <= ram_memory[address + 1];
+				ram_private[23:16] <= ram_memory[address + 2];
+				ram_private[31:24] <= ram_memory[address + 3];
+				ram_private[39:32] <= ram_memory[address + 4];
+				ram_private[47:40] <= ram_memory[address + 5];
+				ram_private[55:48] <= ram_memory[address + 6];
+				ram_private[63:56] <= ram_memory[address + 7];
+			end
 			else if(memWrite)	// write memory
-				ram_memory[address] <= writeData[DATA_BUS_WIDTH - 1:0];
+				ram_memory[address] <= writeData[7:0];
+				ram_memory[address + 1] <= writeData[15:8];
+				ram_memory[address + 2] <= writeData[23:16];
+				ram_memory[address + 3] <= writeData[31:24];
+				ram_memory[address + 4] <= writeData[39:32];
+				ram_memory[address + 5] <= writeData[47:40];
+				ram_memory[address + 6] <= writeData[55:48];
+				ram_memory[address + 7] <= writeData[63:56];
 		end 
 		else	// if chip select is off (no access to memory)
 			ram_private <= 64'bz;

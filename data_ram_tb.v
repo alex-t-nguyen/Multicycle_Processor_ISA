@@ -51,9 +51,9 @@ module data_ram_tb;
 		// Initialize Inputs
 		clk = 0;
 		address = 0;
-		memRead = 1;
-		memWrite = 0;
-		writeData = 0;
+		memRead = 0;
+		memWrite = 1;
+		writeData = 64'd10;
 		cs = 1;
 
 		// Wait 100 ns for global reset to finish
@@ -63,10 +63,9 @@ module data_ram_tb;
 		for (c = 0; c <= 12; c = c + 1)
 		begin
 			clk <= c;
-			address <= 12'd49;	// Program 1 -> Store result in 0x30 (decimal 48)
+			address <= 12'd48;	// Program 1 -> Store result in 0x30 (decimal 48)
 			#100;
 		end
-		$display(readData);
 	end
       
 endmodule

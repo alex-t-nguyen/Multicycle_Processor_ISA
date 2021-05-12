@@ -88,7 +88,7 @@ module control_tb;
 			//instruction <= 19'h07600;	// Program 1 -> Store result in 0x30 (decimal 48)
 			reset <= 0;
 			alu_zero <= 0;
-			opcode <= 5'b01001;
+			opcode <= 5'b00001;
 			#100;
 		end
 		

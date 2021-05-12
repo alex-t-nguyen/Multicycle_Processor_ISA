@@ -92,27 +92,27 @@ module Multi_Cycle_Computer(
 	wire mem_select;
 	wire [WIDTH_OPCODE - 1:0] opcode;	// Opcode input into Control to determine alu_op
 	
-	assign reset_address = 10'd512; // address 512 is first address for instructions
+	assign reset_address = 10'd512; // address 512 is first address for instructions (0x200)
 	assign jump_address = 10'd512;
 	assign program_out = mem_data;
 	
 	// program counter
-	address_register program_counter(.clk(clock), .in_data(pc_next_address), .out_data(pc_address), .enable(PCWrite));
+	address_register program_counter(.clk(clk), .in_data(pc_next_address), .out_data(pc_address), .enable(PCWrite));
 	
-	assign #50 clock_delayed = clock;
+	assign #30 clock_delayed = clk;
 	
 	instruction_ram imem(.clk(clock_delayed), .address(pc_address), 
 								.memRead(VDD), // Harvard architecture - instruction memory is always read, no writing
 								.memWrite(gnd), 
 								.data(imem_data));
 					
-	data_ram dmem(.clk(clock), 
+	data_ram dmem(.clk(clk), 
 					  .address(alu_out_buffer[ADDRESS_BUS_WIDTH - 1:0]), // Address of data memory is calculated from ALU
 					  .memRead(MemRead), .memWrite(MemWrite), .writeData(reg_B_saved), .readData(mem_data), 
 					  .cs(mem_select));	// chip select is the mem_select in control -> control access to memory or not
 	
 	// Store instructions fetched from memory
-   instruction_register iregister(.clk(clock), .in_data(imem_data), .instruction(instruction), .enable(IRWrite));
+   instruction_register iregister(.clk(clk), .in_data(imem_data), .instruction(instruction), .enable(IRWrite));
 	
 	// Store data fetched from memory
 	data_register dmem_register(.clk(clock_delayed), .in_data(mem_data), .out_data(user_data), .enable(mem_select));
@@ -128,12 +128,12 @@ module Multi_Cycle_Computer(
 					 .write_address(write_reg),
 					 .write_data(regfile_data),
 					 .write_enable(RegWrite),
-					 .clk(clock)
+					 .clk(clk)
 					 );
 	 
 	 // Registers to hold contents
-	 data_register regA(.clk(clock), .in_data(regfile_outA), .out_data(reg_A_saved), .enable(VDD));
-	 data_register regB(.clk(clock), .in_data(regfile_outB), .out_data(reg_B_saved), .enable(VDD));
+	 data_register regA(.clk(clk), .in_data(regfile_outA), .out_data(reg_A_saved), .enable(VDD));
+	 data_register regB(.clk(clk), .in_data(regfile_outB), .out_data(reg_B_saved), .enable(VDD));
 	 
 	 // Mux to select destination register
 	 dest_reg_mux2 reg_dst_select(.data0(n_reg), .data1(dest_reg), .select(reg_dst), .dataOut(write_reg));
@@ -165,7 +165,7 @@ module Multi_Cycle_Computer(
 	 );
 	 
 	 // Data register to hold the value of the ALU
-	 data_register ALU_out(.clk(clock), .in_data(alu_out), .out_data(alu_out_buffer), .enable(VDD));
+	 data_register ALU_out(.clk(clk), .in_data(alu_out), .out_data(alu_out_buffer), .enable(VDD));
 	 
 	 // Mux to select next PC address
 	 addr_mux4 pc_addr_select(.data0(alu_out[ADDRESS_BUS_WIDTH - 1:0]),
@@ -176,7 +176,7 @@ module Multi_Cycle_Computer(
 							 .dataOut(pc_next_address));
 							 
 	 // Control unit
-	 control CPU_control(.clk(clock),
+	 control CPU_control(.clk(clk),
 							 .reset(reset),
 							 //.instruction(instruction),
 							 .RegDst(reg_dst),

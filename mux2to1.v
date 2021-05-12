@@ -65,6 +65,8 @@ module dest_reg_mux2(
 	 input select;
 	 output [REGFILE_ADDR_BITS - 1:0] dataOut;
 	 
+	 assign dataOut = select ? data1 : data0;
+	 
 endmodule
 
 	 

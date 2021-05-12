@@ -81,7 +81,7 @@ parameter STATE_MEM_LOAD = 9;
 parameter STATE_MEM_WRITEBACK = 10;
 parameter STATE_MEM_STORE = 12;
 parameter STATE_ALU_WB = 13;
-parameter STATE_ERROR = 13;
+parameter STATE_ERROR = 14;
 //parameter STATE_JUMP_COMPL = 10;
 //parameter STATE_REG_IMM_X = 11;
 
