@@ -53,8 +53,8 @@ module alu_tb;
 		#100;
         
 		// Add stimulus here
-		srcA = 10'd512;
-		srcB = 4;
+		srcA = 64'd6;
+		srcB = 64'd4;
 		ALU_Op = 0;
 	end
       

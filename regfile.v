@@ -39,7 +39,15 @@ module regfile(
 	 input write_enable;
 	 input clk;
 
-	 reg [WIDTH_REGISTER_FILE - 1:0] regfile [REGFILE_ADDR_BITS - 1:0];
+	 reg [WIDTH_REGISTER_FILE - 1:0] regfile [NUM_REGISTERS - 1:0];
+	 
+	 initial begin
+		regfile[0] = 64'd0;
+		regfile[1] = 64'd0;
+		regfile[2] = 64'd0;
+		regfile[3] = 64'd0;
+	 end
+	 
 	 always @ (negedge clk)
 	 begin
 		if(write_enable)

@@ -40,14 +40,18 @@ module alu(
 	 begin
 		answer = 64'd0;
 		case (ALU_Op)
-			0: answer <= srcA + srcB;
-			1: answer <= srcA - srcB;
+			0: answer = srcA + srcB;
+			1: begin 
+					answer = srcA + ((~srcB)+1);	// Take 2's complement of 10 and add for signed arithmetic 
+					answer = (~answer)+1;	// Take 2's complement again to turn back into unsigned (ie. -10 + 1 = -9 -> 9)
+				end
 			default: answer <= 0;
 		endcase
 	 end
-	 
+
 	 // Assign ALU result
-	 assign zero = (answer == 64'd0) ? 1 : 0;	
+	 assign zero = (answer <= srcB) ? 1 : 0;	// Compare unsigned answer (positive equivalent) with srcB to check if branching
+	 
 	 assign result = answer[MSB:0];
 	 
 endmodule

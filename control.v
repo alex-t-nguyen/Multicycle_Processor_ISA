@@ -175,6 +175,7 @@ module control(
 					ALUSrcA <= ALU_A_PC;	// Defaults to PC data for inputA
 					ALUSrcB <= ALU_B_BRANCH;	// Defaults to branch data for inputB
 					ALUOp <= ALU_OP_ADD;	// Defaults to add
+					PCWriteCond <= 1'b1;
 				end
 				
 				STATE_LR_ADDR:
@@ -237,12 +238,12 @@ module control(
 					if (alu_zero & PCWriteCond)
 					begin
 						PCWrite <= 1'b0;
-						//PCSource <= PC_SELECT_ALU_BUF;
+						PCSource <= PC_SELECT_ALU_BUF;	// Branch address stored in ALU_Out_Buffer while registers are compared (subtracted) in ALU to determine if taking branch or not
 					end
 					else
 					begin
 						PCWrite <= 1'b1;
-						PCSource <= PC_SELECT_ALU_BUF;
+						//PCSource <= PC_SELECT_ALU_BUF;
 					end
 				end
 				

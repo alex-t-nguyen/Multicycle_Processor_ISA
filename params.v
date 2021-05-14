@@ -75,13 +75,13 @@ parameter STATE_REG_X = 5;
 //parameter STATE_REG_COMPL = 8;
 parameter STATE_BRANCH_COMPL = 6;
 parameter STATE_MOVE = 7;
-parameter STATE_ADDI = 8;
+parameter STATE_ADDI = 11;
 parameter STATE_LOAD_ADDR = 8;
 parameter STATE_MEM_LOAD = 9;
 parameter STATE_MEM_WRITEBACK = 10;
 parameter STATE_MEM_STORE = 12;
 parameter STATE_ALU_WB = 13;
-parameter STATE_ERROR = 13;
+parameter STATE_ERROR = 14;
 //parameter STATE_JUMP_COMPL = 10;
 //parameter STATE_REG_IMM_X = 11;
 

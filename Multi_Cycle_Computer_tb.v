@@ -53,7 +53,7 @@ module Multi_Cycle_Computer_tb;
 		end
 		
 		
-		for (c = 0; c <= 40; c = c + 1)
+		for (c = 0; c <= 10000; c = c + 1)
 		begin
 			clk <= c;
 			reset <= 0;
