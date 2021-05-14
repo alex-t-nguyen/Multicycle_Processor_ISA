@@ -24,7 +24,7 @@ module Multi_Cycle_Computer(
     program_out
     );
 	 
-	 `include "params.v";
+	 `include "params.v"
 	 
 	 input clk;
     input reset;
@@ -91,13 +91,15 @@ module Multi_Cycle_Computer(
 	wire PCWriteCond;
 	wire mem_select;
 	wire [WIDTH_OPCODE - 1:0] opcode;	// Opcode input into Control to determine alu_op
+	wire branch_cond;
+	wire pc4_or_branch;
 	
 	assign reset_address = 10'd512; // address 512 is first address for instructions (0x200)
 	assign jump_address = 10'd512;
 	assign program_out = mem_data;
 	
 	// program counter
-	address_register program_counter(.clk(clk), .in_data(pc_next_address), .out_data(pc_address), .enable(PCWrite));
+	address_register program_counter(.clk(clk), .in_data(pc_next_address), .out_data(pc_address), .enable(pc4_or_branch));
 	
 	assign #30 clock_delayed = clk;
 	
@@ -175,6 +177,18 @@ module Multi_Cycle_Computer(
 							 .select(pc_select),
 							 .dataOut(pc_next_address));
 							 
+	 or2to1 pc_write_branch_control(.data_in1(branch_cond),
+									.data_in2(PCWrite),
+									.data_out(pc4_or_branch),
+									.enable(VDD)
+									);
+							 
+	 and2to1 pc_branch_alu0_control(.data_in1(alu_out_zero), 
+									.data_in2(PCWriteCond), 
+									.data_out(branch_cond), 
+									.enable(VDD)
+									);
+	 
 	 // Control unit
 	 control CPU_control(.clk(clk),
 							 .reset(reset),
