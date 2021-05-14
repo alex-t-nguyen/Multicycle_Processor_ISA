@@ -57,8 +57,8 @@ module data_ram(
 			ram_memory[i] = 0;
 		end
 		
-		ram_memory[16] = 8'd3;
-		ram_memory[32] = 8'd27;
+		ram_memory[16] = 8'd20;
+		ram_memory[32] = 8'd22;
 		ram_memory[48] = 8'd0;
 	 end
 	 
@@ -93,5 +93,5 @@ module data_ram(
 			ram_private <= 64'bz;
 	 end
 	 assign readData = ram_private;
-
+	 
 endmodule

@@ -51,7 +51,9 @@ module instruction_ram(
 	 initial 
 	 begin
 	 // Load the program at the halfway point, which is the reset address
-	 
+	
+	/*
+	
   // Program C = A + B   A @ 0x10 B @ 0x20 C @ 0x30
   // lr R1, [R0, 0x10]
   // lr R2, [R0, 0x20]
@@ -104,7 +106,92 @@ module instruction_ram(
   // 0x20220
   // 0x07600
   // 0x24330
+  */
+	
   
+  // Program 2:
+  // int sum = 0 ;
+  // for( i = 0 ; i <= 10 ; i++ ){
+  //   sum += i ; 
+  // }
+  //
+  // Assembly code for sum progam here:
+  //        lr R1, [R0, 0];  // int sum = 0
+  //        lr R2, [R0, 0];  // int i = 0;
+  //        addi R3, [R0, 10]; // max limit for i
+  // loop:  add R1, R1, R2;  // sum += i
+  //        addi R2, [R2, 1];  // i++
+  //        bleq R2, R3, loop;  // i<=10, branch back to loop
+  //
+  // Machine code sum progam here:
+  // lr opcode = 8. lr R1, [R0,0]
+  // opcode | unused | reg_source | reg_n | immediate   
+  //   5    |    2     |    2     |   2    |    8       // 19 - 9 - 8 = 2
+  // 01000       00         00        01     0000 0000
+  // regroup bits:
+  // 0010 0000 0001 0000 0000
+  // hex value:
+  // 0x20100
+     ram_memory[0] = 19'h20100;
+  //
+  // lr opcode = 8. lr R2, [R0,0]
+  // opcode | unused | reg_source | reg_n | immediate   
+  //   5    |    2     |    2     |   2    |    8       // 19 - 9 - 8 = 2
+  // 01000       00         00        10     0000 0000
+  // regroup bits:
+  // 0010 0000 0010 0000 0000
+  // hex value:
+  // 0x20200
+     ram_memory[1] = 19'h20200;
+  //
+  // addi opcode = 2. addi R3, [R0,10]
+  // opcode | unused | reg_source | reg_n | immediate   
+  //   5    |    2     |    2     |   2    |    8       // 19 - 9 - 8 = 2
+  // 00010       00         00        11     0000 1010
+  // regroup bits:
+  // 0000 1000 0011 0000 1010
+  // hex value:
+  // 0x0830A
+     ram_memory[2] = 19'h0830A;
+  //
+  // add opcode = 1. add R1, R1, R2
+  // opcode | reg_dest | reg_source | reg_n | unused   
+  //   5    |    2     |    2       |   2   |    8       // 19 - 11 = 8
+  // 00001       01         01          10     0000 0000
+  // regroup bits:
+  // 0000 0101 0110 0000 0000
+  // hex value:
+  // 0x05600
+     ram_memory[3] = 19'h05600;
+  //
+  // addi opcode = 2. addi R2, [R2,1]
+  // opcode | unused | reg_source | reg_n | immediate   
+  //   5    |    2   |    2       |   2    |    8       // 19 - 9 - 8 = 2
+  // 00010       00       10          10     0000 0001
+  // regroup bits:
+  // 0000 1000 1010 0000 0001
+  // hex value:
+  // 0x08A01
+     ram_memory[4] = 19'h08A01;
+  // 
+  // bleq opcode = 13. bleq R2, R3, loop
+  // opcode | unused | reg_source | reg_n | immediate   
+  //   5    |    2   |    2       |   2   |    8       // 19 - 9 - 8 = 2
+  // 01101       00       10          11    1111 1101
+  // regroup bits:
+  // 0011 0100 1011 1111 1101
+  // hex value:
+  // 0x34BFD
+     ram_memory[5] = 19'h34BFD;
+  //
+  // Program 2:
+  // 0x20100
+  // 0x20200
+  // 0x0830A
+  // 0x05A00
+  // 0x08A01
+  // 0x34BFD
+
 	 end
 	 
 	 // word_index is the address divided by the word size (actually 3, but easier to work with 4)
