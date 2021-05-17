@@ -32,7 +32,7 @@ module sign_extend(
 	 always @ (imm)
 	 begin
 		extendedResult[IMMEDIATE_WIDTH - 1:0] = imm[IMMEDIATE_WIDTH - 1:0];
-		extendedResult[DATA_BUS_WIDTH - 1: IMMEDIATE_WIDTH] = {DATA_BUS_WIDTH - IMMEDIATE_WIDTH{imm[IMMEDIATE_WIDTH - 1]}};
+		extendedResult[DATA_BUS_WIDTH - 1: IMMEDIATE_WIDTH] = {53{imm[IMMEDIATE_WIDTH - 1]}};
 	 end
 	 
 	 assign out[DATA_BUS_WIDTH - 1:0] = extendedResult[DATA_BUS_WIDTH - 1:0];
